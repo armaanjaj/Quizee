@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
@@ -60,6 +61,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setQuestion() {
+
+        defaultOptionsView()
+
         // set the starting pointer to 0 in-order to read extract Question object
         val question: Question = mQuestionsList!![mCurrentPosition - 1]
         ivImage?.setImageResource(question.image)
@@ -70,14 +74,12 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         tvOptionTwo?.text = question.optionTwo
         tvOptionThree?.text = question.optionThree
         tvOptionFour?.text = question.optionFour
-        mCurrentPosition++ // increment the pointer/counter to be ready for next question
 
         // change the text/message of the button based on the number of question
         if (mCurrentPosition == mQuestionsList!!.size)
             btnSubmit?.text = "Finish Quiz"
         else
             btnSubmit?.text = "Submit Answer"
-
     }
 
     private fun defaultOptionsView() {
@@ -148,8 +150,50 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.btn_submit -> {
-                // TODO "Implement on submit option"
+                if (mSelectedOptionPosition == 0) {
+                    mCurrentPosition++ // increment the pointer/counter to be ready for next question
+
+                    when {
+                        mCurrentPosition <= mQuestionsList!!.size -> {
+                            setQuestion()
+                        }
+                        else -> {
+                            Toast.makeText(this, "You made it to the end!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    val question = mQuestionsList?.get(mCurrentPosition - 1)
+
+                    if (question!!.correctAnswer != mSelectedOptionPosition)
+                        answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+
+                    answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
+
+                    // change the text/message of the button based on the number of question
+                    if (mCurrentPosition == mQuestionsList!!.size)
+                        btnSubmit?.text = "Finish Quiz"
+                    else
+                        btnSubmit?.text = "Go to next question"
+
+                    mSelectedOptionPosition = 0
+                }
             }
         }
+    }
+
+    private fun answerView(answer: Int, drawableView: Int) {
+        var optionTextView: TextView? = null
+
+        when (answer) {
+            1 -> optionTextView = tvOptionOne
+            2 -> optionTextView = tvOptionTwo
+            3 -> optionTextView = tvOptionThree
+            4 -> optionTextView = tvOptionFour
+        }
+
+        optionTextView?.background = ContextCompat.getDrawable(
+            this, drawableView
+        )
+        optionTextView?.setTextColor(Color.parseColor("#FFFFFF"))
     }
 }
