@@ -19,6 +19,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter your name to start", Toast.LENGTH_SHORT).show()
             else {
                 val intent = Intent(this, QuizQuestionsActivity::class.java)
+
+                // add value of the user's name to the key 'user_name' so that other activities can get it's value
+                intent.putExtra(Constants.USER_NAME, userName.text.toString())
+
                 startActivity(intent)
                 finish()
             }

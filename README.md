@@ -16,6 +16,8 @@ Quizee is a quiz app for Android that allows users to test their knowledge and h
 
 <img width="204" alt="Screenshot 2023-05-27 020254" src="https://github.com/armaanjaj/Quizee/assets/113659942/c870de8a-6f79-442f-ab18-8fc867431e8a">
 
+<img width="204" alt="Screenshot 2023-05-28 023348" src="https://github.com/armaanjaj/Quizee/assets/113659942/3885bbf2-5763-4320-af7a-8cae8602288b">
+
 
 ## Getting Started
 

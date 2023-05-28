@@ -1,5 +1,6 @@
 package com.example.quizee
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var mCurrentPosition: Int = 1
     private var mQuestionsList: ArrayList<Question>? = null
     private var mSelectedOptionPosition: Int = 0
+    private var mUserName: String? = null
+    private var mCorrectAnswer: Int = 0
 
     private var progressBar: ProgressBar? = null
     private var tvProgress: TextView? = null
@@ -33,6 +36,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
+
+        // get the value of the 'user_name' key based on what was set in the MainActivity
+        mUserName = intent.getStringExtra(Constants.USER_NAME)
 
         // get the elements/views using their id
         progressBar = findViewById(R.id.progressBar)
@@ -158,15 +164,26 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                             setQuestion()
                         }
                         else -> {
-                            Toast.makeText(this, "You made it to the end!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, ResultActivity::class.java)
+
+                            intent.putExtra(Constants.USER_NAME, mUserName)
+                            intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswer)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList?.size)
+
+                            startActivity(intent)
+                            finish()
                         }
                     }
                 } else {
                     val question = mQuestionsList?.get(mCurrentPosition - 1)
 
+                    // check if user chose the incorrect answer, it yes, load the wrong option style, else increment the number of correct answers by one and load the correct option style
                     if (question!!.correctAnswer != mSelectedOptionPosition)
                         answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                    else
+                        mCorrectAnswer++
 
+                    // load correct answer TextView style
                     answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
 
                     // change the text/message of the button based on the number of question
